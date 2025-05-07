@@ -44,5 +44,5 @@
 
 1. Clone the repository:
    ```bash
-   git clone https://github.com/yourusername/resume-analyzer.git
+   git clone https://github.com/Rishikumar0102/Resume_Analyzer_in_LangGraph
    cd resume-analyzer
