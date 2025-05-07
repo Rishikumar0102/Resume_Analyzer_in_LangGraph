@@ -1,0 +1,7 @@
+flask
+langgraph
+openai
+python-dotenv
+typing-extensions
+pdfminer.six
+python-docx

@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Resume Analysis Results</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(to right, #f0f4f8, #ffffff);
+            margin: 0;
+            padding: 20px;
+            color: #2c3e50;
+        }
+
+        h1 {
+            text-align: center;
+            font-size: 2.5em;
+            color: #34495e;
+            margin-bottom: 30px;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: auto;
+            background: #ffffff;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
+        }
+
+        .suitability-banner {
+            padding: 18px;
+            margin: 25px 0;
+            border-radius: 10px;
+            font-weight: bold;
+            text-align: center;
+            font-size: 1.2em;
+        }
+
+        .suitable {
+            background-color: #d4edda;
+            color: #155724;
+            border: 2px solid #28a745;
+        }
+
+        .potentially-suitable {
+            background-color: #fff3cd;
+            color: #856404;
+            border: 2px solid #ffc107;
+        }
+
+        .not-suitable {
+            background-color: #f8d7da;
+            color: #721c24;
+            border: 2px solid #dc3545;
+        }
+
+        .match-meter {
+            height: 30px;
+            background-color: #e9ecef;
+            border-radius: 30px;
+            margin: 25px 0;
+            overflow: hidden;
+            box-shadow: inset 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        .meter-bar {
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            color: white;
+            font-size: 1em;
+            transition: width 0.6s ease;
+        }
+
+        .analysis-section {
+            margin-bottom: 30px;
+            padding: 25px;
+            border-radius: 10px;
+            background: #fdfdfd;
+            border-left: 6px solid #3498db;
+            box-shadow: 0 5px 10px rgba(0,0,0,0.05);
+        }
+
+        .analysis-section h2 {
+            color: #2c3e50;
+            margin-bottom: 15px;
+            font-size: 1.5em;
+        }
+
+        .skill-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            margin: 15px 0;
+        }
+
+        .skill-pill {
+            padding: 8px 14px;
+            border-radius: 20px;
+            font-size: 0.95em;
+            font-weight: 500;
+        }
+
+        .matched-skill {
+            background-color: #d1f7e3;
+            color: #08664b;
+            border: 1px solid #28a745;
+        }
+
+        .missing-skill {
+            background-color: #ffe0e0;
+            color: #8a1a1a;
+            border: 1px solid #dc3545;
+        }
+
+        .strength-item, .improvement-item {
+            margin-bottom: 12px;
+            padding-left: 30px;
+            position: relative;
+            line-height: 1.4;
+        }
+
+        .strength-item::before {
+            content: "\f058";
+            font-family: 'Font Awesome 6 Free';
+            font-weight: 900;
+            color: #28a745;
+            position: absolute;
+            left: 0;
+        }
+
+        .improvement-item::before {
+            content: "\f071";
+            font-family: 'Font Awesome 6 Free';
+            font-weight: 900;
+            color: #dc3545;
+            position: absolute;
+            left: 0;
+        }
+
+        .back-link {
+            display: inline-block;
+            margin-top: 30px;
+            padding: 12px 24px;
+            background: #3498db;
+            color: white;
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: bold;
+            transition: background 0.3s ease;
+        }
+
+        .back-link:hover {
+            background: #2980b9;
+        }
+
+        ul {
+            padding-left: 20px;
+        }
+
+        li {
+            margin-bottom: 8px;
+        }
+
+        @media (max-width: 600px) {
+            .analysis-section {
+                padding: 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Resume Analysis Results</h1>
+
+        <div class="suitability-banner {{ 'suitable' if suitable == 'Highly Suitable' else 'potentially-suitable' if suitable == 'Potentially Suitable' else 'not-suitable' }}">
+            {% if suitable == 'Highly Suitable' %}
+                ✅ Highly Suitable ({{ match_score }}% Match)
+            {% elif suitable == 'Potentially Suitable' %}
+                ⚠️ Potentially Suitable ({{ match_score }}% Match)
+            {% else %}
+                ❌ Not Suitable ({{ match_score }}% Match)
+            {% endif %}
+        </div>
+
+        <div class="match-meter">
+            <div class="meter-bar" style="width: {{ match_score }}%; background-color:
+                {% if match_score >= 75 %}#28a745
+                {% elif match_score >= 40 %}#ffc107
+                {% else %}#dc3545
+                {% endif %};">
+                {{ match_score }}% Match
+            </div>
+        </div>
+
+        <div class="analysis-section">
+            <h2>Overall Assessment</h2>
+            <p>{{ feedback }}</p>
+        </div>
+
+        <div class="analysis-section">
+            <h2>Skills Analysis</h2>
+            {% if matched_skills %}
+                <h3>Matched Skills:</h3>
+                <div class="skill-list">
+                    {% for skill in matched_skills %}
+                        <span class="skill-pill matched-skill">{{ skill|title }}</span>
+                    {% endfor %}
+                </div>
+            {% endif %}
+            {% if missing_skills %}
+                <h3>Missing Skills:</h3>
+                <div class="skill-list">
+                    {% for skill in missing_skills %}
+                        <span class="skill-pill missing-skill">{{ skill|title }}</span>
+                    {% endfor %}
+                </div>
+            {% endif %}
+        </div>
+
+        <div class="analysis-section">
+            <h2>Key Strengths</h2>
+            {% if strengths %}
+                <ul style="list-style-type: none; padding-left: 0;">
+                    {% for strength in strengths %}
+                        <li class="strength-item">{{ strength }}</li>
+                    {% endfor %}
+                </ul>
+            {% else %}
+                <p>No specific strengths identified matching the job requirements.</p>
+            {% endif %}
+        </div>
+
+        <div class="analysis-section">
+            <h2>Areas Needing Improvement</h2>
+            {% if improvements %}
+                <ul style="list-style-type: none; padding-left: 0;">
+                    {% for improvement in improvements %}
+                        <li class="improvement-item">{{ improvement }}</li>
+                    {% endfor %}
+                </ul>
+            {% else %}
+                <p>No specific improvement areas identified.</p>
+            {% endif %}
+        </div>
+
+        <div class="analysis-section">
+            <h2>Recommendations</h2>
+            <ul>
+                {% if missing_skills %}
+                    <li>Consider acquiring these missing skills: {{ missing_skills|join(', ')|title }}</li>
+                {% endif %}
+                <li>Highlight your matched skills more prominently in your resume</li>
+                <li>Tailor your resume language to match the job description keywords</li>
+                <li>Quantify achievements where possible (e.g., "Improved performance by 30%")</li>
+            </ul>
+        </div>
+
+        <a href="/" class="back-link"><i class="fas fa-arrow-left"></i> Analyze Another Resume</a>
+    </div>
+</body>
+</html>
